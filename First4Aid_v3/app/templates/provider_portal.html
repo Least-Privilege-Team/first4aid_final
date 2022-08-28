@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Provider Portal</h1>
+    <body>
+        <a href="{{ url_for('providers.provider_cases', username=current_user.username) }}">View your assigned cases</a>
+        <br>
+        {% if current_user.role.role_name == "Admin" %}
+            <a href="{{ url_for('providers.admin_cases') }}">Assign and administer cases</a><br>
+            <a href="{{ url_for('providers.create_account') }}">Create a new provider account</a><br>
+        {% endif %}
+    </body>
+{% endblock content %}

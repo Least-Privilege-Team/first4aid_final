@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+
+  front-end:
+    container_name: 'front-end'
+    build: First4Aid_v3
+    volumes:
+      - .:/code
+    command: 'sh -c "cd First4Aid_v3 && flask run"'
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app
+      - FLASK_RUN_HOST=0.0.0.0
+    depends_on:
+      - "back-end"
+
+  back-end:
+    container_name: 'back-end'
+    build: back-end
+    volumes:
+      - .:/code
+    command: 'sh -c "cd back-end && flask run"'
+    ports:
+      - "5010:5000"
+    links:
+      - db
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app
+      - FLASK_RUN_HOST=0.0.0.0
+      - DATABASE_URL=postgresql+psycopg2://postgres:secret@db:5432/postgres
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: db
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/

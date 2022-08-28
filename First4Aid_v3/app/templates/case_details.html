@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block content %}
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + case.requestor.image_file) }}">
+        <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="#">{{ url_for('users.user_cases', username=case.requestor.username) }}</a>
+          <small class="text-muted">{{ case.date_open.strftime('%d-%m-%Y') }}</small>
+                <div>
+                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{{ url_for('providers.update_case', case_id=case.id) }}">Update Case</a>
+                    <button type="button" class="btn btn-danger btn-sm m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete Case</button>
+                </div>
+        </div>
+        <h2 class="article-title">Request type: {{ case.case_type }}</h2>
+        <p class="article-content"><small class="text-muted">Case Opened {{ case.date_open.strftime('%X UTC on %d-%b-%Y') }}</small>
+            Description: {{ case.description }}
+            </p>
+
+            <div>
+                <h5 class="article-title">
+                    Requestor Information
+                </h5>
+                <p class="article-content">Name: {{ case.requestor.first_name }} {{ case.requestor.last_name }}
+                Requestor Email: {{ case.requestor.email }}</p>
+            </div>
+            <div>
+                <h5 class="article-title">
+                    Assigned Provider
+                </h5>
+            <p class="article-content">Name: {{ case.provider.first_name }} {{ case.provider.last_name }}
+            Email: {{ case.provider.email }}</p>
+                </div>
+            <div class="article-content">
+                <p><h6>Provider Response Actions</h6>{{ case.response }}</p>
+                <p><h6>Activity Log</h6>{{ case.activity_log }}</p>
+            </div>
+      </div>
+    </article>
+    <!-- Modal -->
+      <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel">Delete Case</h5>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <form action="{{ url_for('cases.delete_case', case_id=case.id) }}" method="POST">
+                <input class="btn btn-danger" type="submit" value="Delete">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+{% endblock content %}

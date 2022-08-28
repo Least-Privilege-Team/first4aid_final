@@ -1,0 +1,13 @@
+<nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light shadow-sm p-3 mb-5 bg-body rounded">
+    <div class="container-fluid">
+        <a class="navbar-brand mr-4" href="/"><img src="{{ url_for('static', filename='First4Aid.png') }}" alt="First4Aid" class="logo-img"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                {% include "nav/navbar_items.html.jinja" %}
+            </ul>
+        </div>
+    </div>
+</nav>
