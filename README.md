@@ -11,7 +11,7 @@ This repository contains a containerised application designed to support the fac
 - [Installing and running the app](#installing-and-running-the-app)
 - [Uninstalling and Shutting down the app](#uninstalling-and-shutting-down-the-app)
 - [Testing the app](#testing-the-app)
-- [Functionality overview](#functionality-overview)
+- [Security Features overview](#security-features-overview)
 
 ## Description
 
