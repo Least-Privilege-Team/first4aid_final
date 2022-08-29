@@ -62,6 +62,16 @@ $ docker exec -i flask_app pytest
 $ docker-compose down --rmi all
 ```
 
-## Functionality overview
+## Security Features overview
 
-### Authentication
+- First4Aid’s security features include the following:
+
+- User authentication is designed to incorporate multi-factor authentication through Twilio (currently disabled due to an issue with the Twilio API). Passwords are hashed and salted by BCrypt upon form submission.
+
+- Password reset tokens are encrypted using AES 256 using PyJWT.
+
+- Cross-site scripting is mitigated through the use of hidden tags in the jinja templates, using the application’s secret key as an authentication token.
+
+- Production repository (PostgreSQL database) encrypted at rest, with HTTPS API calls to back end.  Note: the prototype uses an SQLite database for testing. Sensitive data should NOT be stored there.
+
+- Logging is enabled through Python’s Logging library and records all user logins and actions in an external file available only to hosting environment administrators. Log output can be found in `./First4Aid_v3/app-first4aid_v3`.
