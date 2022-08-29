@@ -10,10 +10,13 @@ services:
     command: 'sh -c "cd First4Aid_v3 && flask run"'
     ports:
       - "5000:5000"
+    links:
+      - db
     environment:
       - FLASK_ENV=development
       - FLASK_APP=app
       - FLASK_RUN_HOST=0.0.0.0
+      - DATABASE_URL=postgresql+psycopg2://postgres:secret@db:5432/postgres
     depends_on:
       - "back-end"
 

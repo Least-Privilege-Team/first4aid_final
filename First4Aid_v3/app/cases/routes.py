@@ -1,8 +1,9 @@
-from app import db
+from ..models import db
 from app.cases.forms import CaseForm
 from app.models import Case
 from flask import abort, Blueprint, render_template, url_for, flash, redirect, request
 from flask_login import current_user, login_required
+from app import logging
 
 
 cases = Blueprint('cases', __name__)
@@ -12,6 +13,7 @@ cases = Blueprint('cases', __name__)
 @cases.route("/case/new", methods=['GET', 'POST'])
 @login_required
 def new_case():
+    logging.info('Processing default request')
     form = CaseForm()
     if form.validate_on_submit():
         case = Case(request_type=form.request_type.data.id, description=form.description.data,
@@ -31,6 +33,7 @@ def case(case_id):
     if case.requestor != current_user:  # verify current user is requestor
         abort(403)
     case = Case.query.get_or_404(case_id)
+    logging.info('Processing default request')
     return render_template('case.html', request_type=case.request_type, case=case)
 
 
@@ -51,6 +54,7 @@ def update_case(case_id):
     elif request.method == 'GET':
         form.request_type.data = case.case_type
         form.description.data = case.description
+    logging.info('Processing default request')
     return render_template('update_case.html', title='Update Case',
                            form=form, legend='Update Case')
 
@@ -65,5 +69,6 @@ def delete_case(case_id):
     db.session.delete(case)
     db.session.commit()
     flash('Case successfully deleted.', 'success')
+    logging.info('Processing default request')
     return redirect(url_for('main.home'))
 

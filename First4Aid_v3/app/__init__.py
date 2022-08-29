@@ -10,23 +10,21 @@ https://www.youtube.com/playlist?list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH
 Hackers and Slackers Flask Blueprints
 https://hackersandslackers.com/flask-blueprints/
 """
+import logging
 import os
 from app.config import Config
 from flask import Flask
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
+from .models import login_manager
 from flask_mail import Mail
-from flask_sqlalchemy import SQLAlchemy
+from .models import db
 
-
-db = SQLAlchemy()  # instantiates SQLAlchemy, the ORM
 bcrypt = Bcrypt()  # used to hash/salt data
-login_manager = LoginManager()  # module enables authentication and authorisation
-login_manager.login_view = 'users.login'
-login_manager.login_message_category = 'info'
-
 mail = Mail()  # used for password reset and MFA
 
+# Enable logging
+logging.basicConfig(filename='app-first4aid_v3.log', level=logging.DEBUG,
+    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 def create_app():
     app = Flask(__name__)
@@ -35,7 +33,11 @@ def create_app():
     # Generate CSRF token
     SECRET_KEY = os.urandom(32)
     app.config['SECRET_KEY'] = SECRET_KEY
-
+    
+    # Register database functions with the Flask app.
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.app_context().push()
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)

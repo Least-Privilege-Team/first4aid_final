@@ -1,5 +1,7 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from app import bcrypt, db
+from app import bcrypt
+from ..models import db
+from app import logging
 from app.providers.forms import CreateProviderAccount, UpdateCaseForm
 from app.models import Case, User
 from flask_login import current_user, login_required
@@ -12,6 +14,7 @@ providers = Blueprint('providers', __name__)
 @providers.route("/provider/create_account", methods=['GET', 'POST'])
 @login_required
 def create_account():
+    logging.info('Processing default request')
     if current_user.role.role_name == 'Admin':  # validate admin privileges
         form = CreateProviderAccount()
         if form.validate_on_submit():  # hashes password upon submission
@@ -32,6 +35,7 @@ def create_account():
 @providers.route("/provider/admin_cases")
 @login_required
 def admin_cases():
+    logging.info('Processing default request')
     if current_user.role.role_name == 'Admin':  # validate admin privileges
         page = request.args.get('page', 1, type=int)
         cases = Case.query.order_by(Case.date_open)\
@@ -46,6 +50,7 @@ def admin_cases():
 @providers.route("/provider/case/<int:case_id>")
 @login_required
 def case_details(case_id):
+    logging.info('Processing default request')
     if current_user.role.role_name != 'Requestor':
         case = Case.query.get_or_404(case_id)
         if case.provider == current_user or current_user.role.role_name == 'Admin':  # checks if admin/assigned provider
@@ -62,6 +67,7 @@ def case_details(case_id):
 @providers.route("/provider/case/update/<int:case_id>", methods=['GET', 'POST'])
 @login_required
 def update_case(case_id):
+    logging.info('Processing default request')
     case = Case.query.get_or_404(case_id)
     if current_user.role.role_name == 'Admin' or case.provider == current_user:  # checks if admin or assigned provider
         form = UpdateCaseForm()
@@ -93,6 +99,7 @@ def update_case(case_id):
 @providers.route("/provider/<string:username>")
 @login_required
 def provider_cases(username):
+    logging.info('Processing default request')
     user = User.query.filter_by(username=username).first_or_404()
     if current_user == user:
         page = request.args.get('page', 1, type=int)
@@ -111,4 +118,5 @@ def provider_cases(username):
 @providers.route("/provider/portal")
 @login_required
 def portal():
+    logging.info('Processing default request')
     return render_template('provider_portal.html', title='Provider Portal')

@@ -1,9 +1,15 @@
 from datetime import datetime
-from app import db, login_manager
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 from flask import current_app
 from flask_login import UserMixin
 import jwt
 
+db = SQLAlchemy()
+
+login_manager = LoginManager()  # module enables authentication and authorisation
+login_manager.login_view = 'users.login'
+login_manager.login_message_category = 'info'
 
 @login_manager.user_loader
 def load_user(user_id):  # gets user_id for current_user

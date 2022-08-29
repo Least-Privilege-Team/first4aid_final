@@ -10,41 +10,33 @@ from sqlalchemy.sql import func
 from flask_bcrypt import generate_password_hash
 
 from .models import db
-from .models import Statuses
-from .models import RequestTypes
-from .models import Requestors
-from .models import Providers
-from .models import Cases
-from .models import CaseActivities
-#from .models import Messages
+from .models import User
+from .models import Case
+from .models import Aid
+from .models import Status
+from .models import Role
 
 def create_data_after_db_init():
     """This function creates the data for the database."""
-    db.session.add(Statuses(id=1, value='New'))
-    db.session.add(Statuses(id=2, value='In Progress'))
+    db.session.add(Role(id=1, role_name='Requestor'))
+    db.session.add(Role(id=2, role_name='Provider'))
+    db.session.add(Role(id=3, role_name='Admin'))
     db.session.commit()
 
-    db.session.add(RequestTypes(id=1, value='Food'))
-    db.session.add(RequestTypes(id=2, value='Evacuation'))
-    db.session.add(RequestTypes(id=3, value='Financial'))
-    db.session.add(RequestTypes(id=4, value='Medical'))
-    db.session.add(RequestTypes(id=5, value='Transport'))
-    db.session.commit()
-
-    db.session.add(Requestors(id=1, first_name='John', last_name='Peter',
-    email='jpeter5j@gravatar.com'))
-    db.session.commit()
-
-    db.session.add(Providers(id=1, first_name='Nora', last_name='Morling',
-    email='nmorlingb@canalblog.com',
-    password=generate_password_hash('password2022', 10)))
-    db.session.commit()
-
-    db.session.add(Cases(id=1, requestor_id=1, provider_id=1,
-        request_type_id=1, status_id=1,
-        description='Need help with food.',
-        response='We will help.'))
+    db.session.add(Aid(id=1, aid_type='Food'))
+    db.session.add(Aid(id=2, aid_type='Evacuation'))
+    db.session.add(Aid(id=3, aid_type='Financial'))
+    db.session.add(Aid(id=4, aid_type='Medical'))
+    db.session.add(Aid(id=5, aid_type='Transport'))
     db.session.commit()
     
-    db.session.add(CaseActivities(id=1, case_id=1, entry='Created today'))
+    db.session.add(Status(id=1, status_name='Open'))
+    db.session.add(Status(id=2, status_name='In Progress'))
+    db.session.add(Status(id=3, status_name='Closed'))
+    db.session.commit()
+
+    hashed_password = generate_password_hash('password').decode('utf-8')
+    db.session.add(User(id=0, first_name='Test', last_name='Admin',
+        username='testadmin1', email='testadmin1@abc.com', image_file=None,
+        password=hashed_password, role_id=3))
     db.session.commit()

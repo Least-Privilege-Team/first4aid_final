@@ -1,4 +1,6 @@
-from app import db, bcrypt
+from app import bcrypt
+from ..models import db
+from app import logging
 from app.models import Case, User
 from app.users.forms import (LoginForm, RegistrationForm, RequestResetForm,
                                       ResetPasswordForm, UpdateAccountForm)
@@ -13,6 +15,7 @@ users = Blueprint('users', __name__)
 # allows users to create a requestor account
 @users.route("/register", methods=['GET', 'POST'])
 def register():
+    logging.info('Processing default request')
     if current_user.is_authenticated:  # checks to see if user is already logged in
         flash('Already logged in.', 'success')
         return redirect(url_for('main.home'))
@@ -31,6 +34,7 @@ def register():
 # process for logging in all account types
 @users.route("/login", methods=['GET','POST'])
 def login():
+    logging.info('Processing default request')
     if current_user.is_authenticated:  # checks to see if user is already logged in
         flash('Already logged in.', 'success')
         return redirect(url_for('main.home'))
@@ -49,6 +53,7 @@ def login():
 # closes session
 @users.route("/logout")
 def logout():
+    logging.info('Processing default request')
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('main.home'))
@@ -58,6 +63,7 @@ def logout():
 @users.route("/account", methods=['GET', 'POST'])
 @login_required
 def account():
+    logging.info('Processing default request')
     form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
@@ -83,6 +89,7 @@ def account():
 # allows requestors to view a list of their own cases
 @users.route("/user/<string:username>")
 def user_cases(username):
+    logging.info('Processing default request')
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
     cases = Case.query.filter_by(requestor=user)\
@@ -94,6 +101,7 @@ def user_cases(username):
 # allows users to request their own password resets
 @users.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
+    logging.info('Processing default request')
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
     form = RequestResetForm()
@@ -108,6 +116,7 @@ def reset_request():
 # authenticates user's reset token to enable password reset
 @users.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
+    logging.info('Processing default request')
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
     user = User.verify_reset_token(token)

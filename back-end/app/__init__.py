@@ -7,7 +7,7 @@ from flask import redirect
 from flask import url_for
 
 from .models import db
-#from .db_migration import create_data_after_db_init
+from .db_migration import create_data_after_db_init
 
 def create_app(test_config=None):
     """Create and configure the flask application.
@@ -23,8 +23,8 @@ def create_app(test_config=None):
     db.create_all()
 
     # Check if the database contains data. If not, add the data.
-    #if db.session.query(models.Statuses).first() is None:
-    #    create_data_after_db_init()
+    if db.session.query(models.User).first() is None:
+        create_data_after_db_init()
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
